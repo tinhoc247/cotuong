@@ -126,6 +126,9 @@ function seg(k,opts){return '<div class="seg">'+opts.map(function(o){return '<bu
 function esc(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function tip(t,c){return '<button class="tip'+(c?' '+c:'')+'" data-tip="'+esc(t)+'" aria-label="Thông tin">i</button>'}
 function tf(){return '<div class="fld"><b>Thời gian mỗi bên</b>'+seg('base',[[0,'Không giới hạn'],[3,'3 phút'],[5,'5 phút'],[10,'10 phút'],[15,'15 phút'],[30,'30 phút']])+'</div>'+(M.base?'<div class="fld"><b>Cộng thêm mỗi nước</b>'+seg('inc',[[0,'Không'],[2,'+2 giây'],[5,'+5 giây']])+'</div>':'')}
+
+function fitMenu(){var m=document.querySelector('.menu');if(!m)return;m.style.zoom='';if(innerWidth<820)return;var h=m.getBoundingClientRect().height,a=innerHeight-30;if(h>a)m.style.zoom=Math.max(.5,a/h)}
+window.addEventListener('resize',fitMenu);
 function menu(){var h=parse(),on=M.mode=='on',st=M.step,sb='style="margin:0"',body,sides=[[1,'Đỏ'],[-1,'Đen'],[0,'Ngẫu nhiên']],
 RULE='Luật chơi: Tướng và Sĩ chỉ đi trong cung. Tượng đi chéo 2 ô, không qua sông, bị cản nếu có quân ở giữa. Mã đi hình chữ L, bị cản chân. Xe đi thẳng. Pháo đi như Xe nhưng muốn ăn quân phải nhảy qua đúng 1 quân. Tốt đi 1 ô, qua sông được đi ngang. Hai Tướng không được đối mặt. Chiếu liên tục hoặc đuổi quân liên tục sẽ bị xử thua; một thế cờ lặp lại 3 lần thì hòa.';
 if(on&&st=='wait')body='<div class="fld"><b>Mã phòng</b><div style="font:800 44px/1 \'Bricolage Grotesque\',sans-serif;letter-spacing:.12em">'+esc(M.code)+'</div><p class="small" '+sb+'>Gửi mã này cho bạn bè và giữ trang mở đến khi họ vào phòng.</p></div><button class="btn big" data-a="cancel">Huỷ phòng</button>';
@@ -137,7 +140,7 @@ else if(on)body='<div class="fld"><b>Tên hiển thị'+tip('Tên hiện cho đ�
 else body='<div class="fld"><b>Cấp độ'+tip('Dễ: máy nhìn trước 1 nước và hay đi bừa. Trung bình: tính trước 2 nước. Khó: tính trước 3 nước.')+'</b>'+seg('lvl',[[1,'Dễ'],[2,'Trung bình'],[3,'Khó']])+'</div><div class="fld"><b>Bạn cầm quân</b>'+seg('side',sides)+'</div>'+tf()+'<button class="btn pri big" data-a="start">Bắt đầu ván</button>';
 $('#screen').innerHTML='<div class="menu"><div class="main"><div><h1>Đấu Trường Cờ Tướng'+tip(RULE,'r')+'</h1></div>'
 +(st?'':'<div class="modes"><button class="mode" data-k="mode" data-v="ai" aria-pressed="'+!on+'"><span class="tk">✓</span><b>1 người</b><small>Đấu với máy</small></button><button class="mode" data-k="mode" data-v="on" aria-pressed="'+on+'"><span class="tk">✓</span><b>2 người</b><small>Online, vào phòng bằng mã</small></button></div>')
-+'<div class="panel">'+body+'</div></div><div class="hero">'+svg(h)+'</div></div>'}
++'<div class="panel">'+body+'</div></div><div class="hero">'+svg(h)+'</div></div>';fitMenu()}
 function disc(t,red){return '<i class="pc '+(red?'r':'k')+'">'+CH[t][red?0:1]+'</i>'}
 function capOf(c){var a=[];S.hist.forEach(function(h){if(h.cap&&(h.p>0?1:-1)==c)a.push(Math.abs(h.cap))});a.sort(function(x,y){return VAL[y]-VAL[x]});return a.map(function(t){return disc(t,c<0)}).join('')}
 function pbar(c){var s=S,n=s.mode=='ai'?(c==s.me?'Bạn':'Máy · '+['','Dễ','Trung bình','Khó'][s.lvl]):s.mode=='on'?(c==s.me?'Bạn':esc(s.on||'Đối thủ')):(c>0?'Đỏ':'Đen'),on=!s.over&&!s.cd&&s.turn==c;
