@@ -64,7 +64,16 @@ svg.bd{touch-action:none;display:block;width:100%;height:auto;border-radius:8px;
 .small{font-size:13px;color:var(--muted)}
 .clks{display:grid;grid-template-columns:1fr 1fr;gap:8px}.clk{display:grid;justify-items:end;padding:6px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}.clk span{font-size:12px;color:var(--muted)}.clk b{font:700 24px/1.1 ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}.clk.on{background:var(--accent);color:var(--on-accent);border-color:transparent}.clk.on span{color:var(--on-accent);opacity:.8}.clk.low:not(.on) b{color:var(--danger)}
 .in{flex:1;min-width:0;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
-</style></head><body>
+</style><style id="vk-css">
+button.vkb{all:unset;box-sizing:border-box;position:absolute;right:8px;top:50%;transform:translateY(-50%);width:48px;height:42px;border-radius:12px;background:#f97316;color:#fff;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 3px 0 #c2410c;display:grid;place-items:center;text-align:center;z-index:2;-webkit-tap-highlight-color:transparent}button.vkb:active{transform:translateY(-50%) scale(.94)}
+.vkw{position:relative;display:block;flex:1;min-width:0}.vkw>input{width:100%;box-sizing:border-box;padding-right:64px!important}.efield>input{padding-right:64px!important}
+#vk{position:fixed;left:0;right:0;bottom:0;z-index:99999;display:none;background:#0f172a;padding:10px 8px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px #0008;user-select:none;-webkit-user-select:none;touch-action:manipulation;font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif}
+#vk .vr{display:flex;justify-content:center;gap:6px;margin:6px auto;max-width:980px}
+#vk button{all:unset;box-sizing:border-box;flex:1;min-width:0;height:clamp(54px,9vh,76px);display:flex;align-items:center;justify-content:center;text-align:center;font-size:clamp(22px,4vw,36px);font-weight:800;border-radius:12px;background:#f1f5f9;color:#0f172a;box-shadow:0 4px 0 #94a3b8;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#vk button:active{transform:translateY(3px);box-shadow:0 1px 0 #94a3b8;background:#fde68a}
+#vk .num{background:#bae6fd}#vk .fn{background:#fed7aa;flex:1.6}#vk .ok{background:#22c55e;color:#fff;box-shadow:0 4px 0 #15803d;flex:2.2}#vk .cl{background:#fca5a5;flex:1.6}#vk .sp{flex:5}#vk .on{background:#fde047}
+</style>
+</head><body>
 <div class="wrap"><main id="screen"></main></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -133,9 +142,9 @@ function menu(){var h=parse(),on=M.mode=='on',st=M.step,sb='style="margin:0"',bo
 RULE='Luật chơi: Tướng và Sĩ chỉ đi trong cung. Tượng đi chéo 2 ô, không qua sông, bị cản nếu có quân ở giữa. Mã đi hình chữ L, bị cản chân. Xe đi thẳng. Pháo đi như Xe nhưng muốn ăn quân phải nhảy qua đúng 1 quân. Tốt đi 1 ô, qua sông được đi ngang. Hai Tướng không được đối mặt. Chiếu liên tục hoặc đuổi quân liên tục sẽ bị xử thua; một thế cờ lặp lại 3 lần thì hòa.';
 if(on&&st=='wait')body='<div class="fld"><b>Mã phòng</b><div style="font:800 44px/1 \'Bricolage Grotesque\',sans-serif;letter-spacing:.12em">'+esc(M.code)+'</div><p class="small" '+sb+'>Gửi mã này cho bạn bè và giữ trang mở đến khi họ vào phòng.</p></div><button class="btn big" data-a="cancel">Huỷ phòng</button>';
 else if(on&&st=='search')body='<div class="fld"><div class="stat">Đang tìm đối thủ…</div><p class="small" '+sb+'>Bạn sẽ được ghép với người cũng đang tìm trận.</p></div><button class="btn big" data-a="cancel">Dừng tìm</button>';
-else if(on)body='<div class="fld"><b>Tên hiển thị'+tip('Tên hiện cho đối thủ trong phòng. Có thể để trống.')+'</b><input class="in" id="nm" maxlength="16" placeholder="Ví dụ: Minh" value="'+esc(M.name)+'"></div>'
+else if(on)body='<div class="fld"><b>Tên hiển thị'+tip('Tên hiện cho đối thủ trong phòng. Có thể để trống.')+'</b><span class="vkw"><input class="in" id="nm" maxlength="16" placeholder="Ví dụ: Minh" value="'+esc(M.name)+'"><button type="button" class="vkb" data-vk="nm" title="Bàn phím ảo" aria-label="Bàn phím ảo">⌨️</button></span></div>'
 +'<div class="sub"><b>Tạo mã'+tip('Tạo phòng mới rồi gửi mã 5 ký tự cho bạn bè. Thời gian bạn chọn ở đây cũng dùng cho Ghép ngẫu nhiên.')+'</b><div class="fld"><b>Bạn cầm quân</b>'+seg('osd',sides)+'</div>'+tf()+'<button class="btn pri big" data-a="create">Tạo mã</button></div>'
-+'<div class="sub"><b>Nhập mã'+tip('Nhập mã 5 ký tự bạn bè gửi để vào phòng của họ.')+'</b><div style="display:flex;gap:8px"><input class="in code" id="cd" maxlength="5" placeholder="K7QD2" value="'+esc(M.code)+'"><button class="btn pri" data-a="join">Vào phòng</button></div></div>'
++'<div class="sub"><b>Nhập mã'+tip('Nhập mã 5 ký tự bạn bè gửi để vào phòng của họ.')+'</b><div style="display:flex;gap:8px"><span class="vkw"><input class="in code" id="cd" maxlength="5" placeholder="K7QD2" value="'+esc(M.code)+'"><button type="button" class="vkb" data-vk="cd" title="Bàn phím ảo" aria-label="Bàn phím ảo">⌨️</button></span><button class="btn pri" data-a="join">Vào phòng</button></div></div>'
 +'<button class="btn big" data-a="match">Ghép ngẫu nhiên</button>'+(M.err?'<p class="small" style="margin:0;color:var(--danger)">'+esc(M.err)+'</p>':'');
 else body='<div class="fld"><b>Cấp độ'+tip('Dễ: máy nhìn trước 1 nước và hay đi bừa. Trung bình: tính trước 2 nước. Khó: tính trước 3 nước.')+'</b>'+seg('lvl',[[1,'Dễ'],[2,'Trung bình'],[3,'Khó']])+'</div><div class="fld"><b>Bạn cầm quân</b>'+seg('side',sides)+'</div>'+tf()+'<button class="btn pri big" data-a="start">Bắt đầu ván</button>';
 $('#screen').innerHTML='<div class="menu"><div class="main"><div><h1>Đấu Trường Cờ Tướng'+tip(RULE,'r')+'</h1></div>'
@@ -239,4 +248,25 @@ function upd(){if(!S||!S.base)return;[1,-1].forEach(function(c){var e=$('#k'+c);
 setInterval(function(){if(!S||!S.base||S.over)return;var c=0;[1,-1].forEach(function(x){if(cur(x)<=0)c=x});if(c){S.left[c]=0;S.over={win:-c,t:1};return show()}upd()},200);
 menu();
 })();
-</script></body></html>
+</script><script id="vk-js">
+(function(){var T=null,OKA='',sh=true,K=null,R=['1234567890','QWERTYUIOP','ASDFGHJKL','ZXCVBNM'],NM={jN:1,pname:1,nm:1,hwn:1};
+function el(){return T?document.getElementById(T):null}
+function isNm(){return !!NM[T]}
+function build(){K=document.createElement('div');K.id='vk';K.addEventListener('mousedown',function(e){e.preventDefault()});
+ K.addEventListener('click',function(e){var b=e.target.closest('button');if(b)key(b.getAttribute('data-k'))});document.body.appendChild(K)}
+function draw(){var n=isNm(),lc=function(c){return /[A-Z]/.test(c)&&n&&!sh?c.toLowerCase():c};
+ K.innerHTML=R.map(function(r,i){return '<div class="vr">'+(i==3&&n?'<button class="fn'+(sh?' on':'')+'" data-k="SH">⇧</button>':'')+r.split('').map(function(c){return '<button'+(i==0?' class="num"':'')+' data-k="'+lc(c)+'">'+lc(c)+'</button>'}).join('')+(i==3?'<button class="fn" data-k="BS">⌫</button>':'')+'</div>'}).join('')+
+ '<div class="vr"><button class="cl" data-k="CL">✖ Đóng</button>'+(n?'<button class="sp" data-k=" ">␣ Dấu cách</button>':'')+'<button class="ok" data-k="OK">✔ Xong</button></div>'}
+function ev(e){e.dispatchEvent(new Event('input',{bubbles:true}));if(isNm())sh=!e.value||/ $/.test(e.value);draw()}
+function key(k){var e=el();if(!e)return close();
+ if(k=='CL')return close();if(k=='SH'){sh=!sh;return draw()}
+ if(k=='BS'){e.value=e.value.slice(0,-1);return ev(e)}
+ if(k=='OK'){var id=T,a=OKA;close();if(a){try{new Function(a)()}catch(x){}}else if(id=='code'||id=='cd'){var b=document.querySelector('[data-act="join-room"],[data-a="join"]');if(b)b.click()}return}
+ var m=+e.getAttribute('maxlength')||99;if(e.value.length>=m)return;e.value+=k;ev(e)}
+function close(){if(K)K.style.display='none';document.body.style.paddingBottom='';var e=el();if(e)e.removeAttribute('inputmode');T=null;OKA=''}
+function open(id,ok){var e=document.getElementById(id);if(!e)return;if(!K)build();if(T==id)return close();var o=el();if(o)o.removeAttribute('inputmode');T=id;OKA=ok||'';sh=isNm()?!e.value:true;e.setAttribute('inputmode','none');e.blur();draw();K.style.display='block';document.body.style.paddingBottom=K.offsetHeight+'px';setTimeout(function(){e.scrollIntoView({block:'center',behavior:'smooth'})},50)}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.vkb');if(b){e.preventDefault();open(b.getAttribute('data-vk'),b.getAttribute('data-ok'))}},true);
+window.vk=open;
+})();
+</script>
+</body></html>
